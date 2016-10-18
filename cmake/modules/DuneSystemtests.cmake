@@ -227,7 +227,7 @@ function(add_system_test_per_target)
   # parse arguments to function call
   set(OPTION DEBUG)
   set(SINGLE INIFILE SCRIPT TARGETBASENAME)
-  set(MULTI TARGET)
+  set(MULTI TARGET ADDED_TESTS)
   cmake_parse_arguments(TARGVAR "${OPTION}" "${SINGLE}" "${MULTI}" ${ARGN})
 
   if(TARGVAR_UNPARSED_ARGUMENTS)
@@ -261,6 +261,7 @@ function(add_system_test_per_target)
 
   # add the tests for all targets
   foreach(target ${TARGVAR_TARGET})
+    set(testnames)
     foreach(inifile ${iniinfo_names})
       if(${TARGVAR_DEBUG})
         message("  Adding a target with executable ${target} and inifile ${inifile}...")
@@ -295,6 +296,7 @@ function(add_system_test_per_target)
       get_filename_component(iniext ${inifile} EXT)
 
       if(${DOSOMETHING})
+        set(testname ${target}_${ininame})
         # Make sure to exclude the target from all, even when it is user-provided
         # This is exactly what dune_add_test does in dune-common
         if(DUNE_BUILD_TESTS_ON_MAKE_ALL)
@@ -308,14 +310,14 @@ function(add_system_test_per_target)
 
         # Now add the actual test!
         if(NOT ${MPI_CXX_FOUND})
-          _add_test(NAME ${target}_${ininame}
+          _add_test(NAME ${testname}
                     COMMAND ${CMAKE_BINARY_DIR}/dune-env ${TARGVAR_SCRIPT}
                     --exec ${target}
                     --ini "${CMAKE_CURRENT_BINARY_DIR}/${ininame}${iniext}"
                     --source ${CMAKE_CURRENT_SOURCE_DIR}
                    )
         else()
-          _add_test(NAME ${target}_${ininame}
+          _add_test(NAME ${testname}
                     COMMAND ${CMAKE_BINARY_DIR}/dune-env ${TARGVAR_SCRIPT}
                     --exec ${target}
                     --ini "${CMAKE_CURRENT_BINARY_DIR}/${ininame}${iniext}"
@@ -327,10 +329,12 @@ function(add_system_test_per_target)
                     --max-processors=${DUNE_MAX_TEST_CORES}
                    )
         endif()
-        set_property(TEST ${target}_${ininame} PROPERTY LABELS ${iniinfo_labels_${ininame}} DUNE_SYSTEMTEST)
-        set_tests_properties(${target}_${ininame} PROPERTIES SKIP_RETURN_CODE 77)
+        list(APPEND testnames ${testname})
+        set_property(TEST ${testname} PROPERTY LABELS ${iniinfo_labels_${ininame}} DUNE_SYSTEMTEST)
+        set_tests_properties(${testname} PROPERTIES SKIP_RETURN_CODE "77")
       endif()
     endforeach()
+    set(${TARGVAR_ADDED_TESTS}_${target} ${testnames} PARENT_SCOPE)
   endforeach()
 endfunction()
 
@@ -338,7 +342,7 @@ function(dune_add_system_test)
   # parse arguments
   set(OPTION DEBUG NO_TESTS)
   set(SINGLE INIFILE BASENAME SCRIPT)
-  set(MULTI SOURCE TARGET CREATED_TARGETS)
+  set(MULTI SOURCE TARGET CREATED_TARGETS ADDED_TESTS)
   cmake_parse_arguments(SYSTEMTEST "${OPTION}" "${SINGLE}" "${MULTI}" ${ARGN})
 
   if(SYSTEMTEST_UNPARSED_ARGUMENTS)
@@ -393,7 +397,11 @@ function(dune_add_system_test)
                                TARGET ${targetlist}
                                SCRIPT ${SYSTEMTEST_SCRIPT}
                                ${DEBUG}
-                               TARGETBASENAME ${SYSTEMTEST_BASENAME})
+                               TARGETBASENAME ${SYSTEMTEST_BASENAME}
+                               ADDED_TESTS added_tests)
+    foreach(target ${targetlist})
+        set(${SYSTEMTEST_ADDED_TESTS}_${target} ${added_tests_${target}} PARENT_SCOPE)
+    endforeach(target)
   else()
     dune_execute_process(COMMAND ${CMAKE_BINARY_DIR}/dune-env dune_has_static_section.py
                                  --ini ${SYSTEMTEST_INIFILE}
@@ -413,7 +421,9 @@ function(dune_add_system_test)
     add_system_test_per_target(INIFILE ${SYSTEMTEST_INIFILE}
                                TARGET ${SYSTEMTEST_TARGET}
                                SCRIPT ${SYSTEMTEST_SCRIPT}
-                               ${DEBUG})
+                               ${DEBUG}
+                               ADDED_TESTS testlist)
+    set(${SYSTEMTEST_ADDED_TESTS} ${testlist} PARENT_SCOPE)
   endif()
 endfunction()
 
