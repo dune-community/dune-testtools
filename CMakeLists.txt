@@ -36,7 +36,7 @@ dune_python_add_test(NAME pep8
 
 add_subdirectory("dune")
 add_subdirectory("doc")
-add_subdirectory(cmake)
+add_subdirectory("cmake/modules")
 
 # Use a custom section to export testtool module path for downstream modules.
 set(DUNE_CUSTOM_PKG_CONFIG_SECTION "
