@@ -7,8 +7,7 @@ dune_add_system_test(SOURCE test.cc
                      CREATED_TARGETS ct1
                     )
 
-# How do we assert the new behaviour of adding 77 tests upon skipping?
-#dune_assert(LIST_LENGTH ct1 1 MESSAGE "Error in discard test 1")
+dune_assert(LIST_LENGTH ct1 1 MESSAGE "Error in discard test 1")
 
 set(MYOTHERPARAM 0)
 
@@ -18,5 +17,4 @@ dune_add_system_test(SOURCE test.cc
                      CREATED_TARGETS ct2
                     )
 
-# How do we assert the new behaviour of adding 77 tests upon skipping?
-# dune_assert(LIST_LENGTH ct2 0 MESSAGE "Error in discard test 2")
+dune_assert(LIST_LENGTH ct2 0 MESSAGE "Error in discard test 2")
