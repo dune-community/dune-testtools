@@ -134,6 +134,7 @@
 #    Internally, this reuses the functions :ref:`add_static_variants` and
 #    :ref:`add_system_test_per_target`.
 #
+cmake_policy(SET CMP0057 NEW)
 
 function(add_static_variants)
   # parse the parameter list
@@ -222,6 +223,7 @@ function(add_static_variants)
 endfunction()
 
 function(add_system_test_per_target)
+
   # parse arguments to function call
   set(OPTION DEBUG)
   set(SINGLE INIFILE SCRIPT TARGETBASENAME)
@@ -312,25 +314,30 @@ function(add_system_test_per_target)
         endif ()
         
         # Now add the actual test!
-        if(NOT ${MPI_CXX_FOUND})
-          _add_test(NAME ${testname}
-                    COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env ${TARGVAR_SCRIPT}
-                    ${EXEC_ARG}
-                    --ini "${CMAKE_CURRENT_BINARY_DIR}/${ininame}${iniext}"
-                    --source ${CMAKE_CURRENT_SOURCE_DIR}
-                   )
+        get_test_property(${testname} LABELS result)
+        if(result)
+          message(WARNING "not adding test \"${testname}\" mulitple times")
         else()
-          _add_test(NAME ${testname}
-                    COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env ${TARGVAR_SCRIPT}
-                    ${EXEC_ARG}
-                    --ini "${CMAKE_CURRENT_BINARY_DIR}/${ininame}${iniext}"
-                    --source ${CMAKE_CURRENT_SOURCE_DIR}
-                    --mpi-exec "${MPIEXEC}"
-                    --mpi-numprocflag=${MPIEXEC_NUMPROC_FLAG}
-                    --mpi-preflags "${MPIEXEC_PREFLAGS}"
-                    --mpi-postflags "${MPIEXEC_POSTFLAGS}"
-                    --max-processors=${DUNE_MAX_TEST_CORES}
-                   )
+          if(NOT ${MPI_CXX_FOUND})
+            _add_test(NAME ${testname}
+                      COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env ${TARGVAR_SCRIPT}
+                      ${EXEC_ARG}
+                      --ini "${CMAKE_CURRENT_BINARY_DIR}/${ininame}${iniext}"
+                      --source ${CMAKE_CURRENT_SOURCE_DIR}
+                     )
+          else()
+            _add_test(NAME ${testname}
+                      COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env ${TARGVAR_SCRIPT}
+                      ${EXEC_ARG}
+                      --ini "${CMAKE_CURRENT_BINARY_DIR}/${ininame}${iniext}"
+                      --source ${CMAKE_CURRENT_SOURCE_DIR}
+                      --mpi-exec "${MPIEXEC}"
+                      --mpi-numprocflag=${MPIEXEC_NUMPROC_FLAG}
+                      --mpi-preflags "${MPIEXEC_PREFLAGS}"
+                      --mpi-postflags "${MPIEXEC_POSTFLAGS}"
+                      --max-processors=${DUNE_MAX_TEST_CORES}
+                     )
+          endif()
         endif()
         list(APPEND testnames ${testname})
         set_property(TEST ${testname} PROPERTY LABELS ${iniinfo_labels_${ininame}} DUNE_SYSTEMTEST)
