@@ -39,7 +39,8 @@ function(parse_python_data)
   set(SINGLEKEY __SEMICOLON)
   set(MULTIKEYS __SINGLE __MULTI __DATA)
   # first parsing: What keys are present in the data
-  cmake_parse_arguments(KEYS "" "${SINGLEKEY}" "${MULTIKEYS}" ${PYPARSE_INPUT})
+  file(READ ${PYPARSE_INPUT} filecontent)
+  cmake_parse_arguments(KEYS "" "${SINGLEKEY}" "${MULTIKEYS}" "${filecontent}")
 
   # second parsing: What data is associated with the keys
   cmake_parse_arguments(DATA "" "${KEYS___SINGLE}" "${KEYS___MULTI}" ${KEYS___DATA})

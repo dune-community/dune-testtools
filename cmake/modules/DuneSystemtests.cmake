@@ -160,9 +160,11 @@ function(add_static_variants)
   dune_execute_process(COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env dune_extract_static.py
                                --ini ${STATVAR_INIFILE}
                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                       OUTPUT_VARIABLE output
-                       ERROR_MESSAGE "Error extracting static info from ${STATVAR_INIFILE}")
-  parse_python_data(PREFIX STATINFO INPUT "${output}")
+                       OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/metaini.output
+                       ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/metaini.error
+                     ERROR_MESSAGE "Error extracting static info from ${STATVAR_INIFILE}")
+
+  parse_python_data(PREFIX STATINFO INPUT "${CMAKE_CURRENT_BINARY_DIR}/metaini.output")
 
   # If there is more than one configuration, introduce a meta target
   # that collects all these static variants
@@ -254,10 +256,11 @@ function(add_system_test_per_target)
                                --cmake
                                --ini ${TARGVAR_INIFILE}
                                --dir ${CMAKE_CURRENT_BINARY_DIR}
-                       OUTPUT_VARIABLE output
+                       OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/metaini.output
+                       ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/metaini.error
                        ERROR_MESSAGE "Error expanding ${TARGVAR_INIFILE}")
 
-  parse_python_data(PREFIX iniinfo INPUT "${output}")
+  parse_python_data(PREFIX iniinfo INPUT "${CMAKE_CURRENT_BINARY_DIR}/metaini.output")
 
   # add the tests for all targets
   foreach(target ${TARGVAR_TARGET})
