@@ -1,3 +1,8 @@
 testtools_add_python_targets(wrapper
   __init__
+argumentparser
+call_executable
+compareini
+convergencetest
+fuzzy_compare_vtk
 )

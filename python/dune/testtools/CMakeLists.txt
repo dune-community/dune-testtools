@@ -2,4 +2,16 @@ add_subdirectory(wrapper)
 add_subdirectory(parametertree)
 testtools_add_python_targets(testtools
   __init__
+cmakeoutput
+command_infrastructure
+command
+conditionals
+escapes
+__init__
+metaini
+parser
+static_metaini
+testdiscarding
+uniquenames
+writeini
 )
