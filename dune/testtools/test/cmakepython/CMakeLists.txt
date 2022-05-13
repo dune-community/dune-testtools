@@ -1,6 +1,6 @@
 # This is a configure test for the Python CMake interface
 
-execute_process(COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env python ${CMAKE_CURRENT_SOURCE_DIR}/testdata.py ${CMAKE_CURRENT_BINARY_DIR}/interface.log
+execute_process(COMMAND ${CMAKE_BINARY_DIR}/gdt-run-in-dune-env python ${CMAKE_CURRENT_SOURCE_DIR}/testdata.py ${CMAKE_CURRENT_BINARY_DIR}/interface.log
                 )
 
 include(ParsePythonData)

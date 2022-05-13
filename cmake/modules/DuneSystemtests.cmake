@@ -158,7 +158,7 @@ function(add_static_variants)
 
   # get the static information from the ini file
   # TODO maybe check whether an absolute path has been given for a mini file
-  dune_execute_process(COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env dune_extract_static.py
+  dune_execute_process(COMMAND ${CMAKE_BINARY_DIR}/gdt-run-in-dune-env dune_extract_static.py
                                --ini ${STATVAR_INIFILE}
                                --file ${CMAKE_CURRENT_BINARY_DIR}/interface.log
                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -250,7 +250,7 @@ function(add_system_test_per_target)
   configure_file(${TARGVAR_INIFILE} ${CMAKE_CURRENT_BINARY_DIR}/${BOGUSFILE})
 
   # expand the given meta ini file into the build tree
-  dune_execute_process(COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env dune_expand_metaini.py
+  dune_execute_process(COMMAND ${CMAKE_BINARY_DIR}/gdt-run-in-dune-env dune_expand_metaini.py
                                --cmake
                                --ini ${TARGVAR_INIFILE}
                                --dir ${CMAKE_CURRENT_BINARY_DIR}
@@ -323,14 +323,14 @@ function(add_system_test_per_target)
         else()
           if(NOT ${MPI_CXX_FOUND})
             _add_test(NAME ${testname}
-                      COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env ${TARGVAR_SCRIPT}
+                      COMMAND ${CMAKE_BINARY_DIR}/gdt-run-in-dune-env ${TARGVAR_SCRIPT}
                       ${EXEC_ARG}
                       --ini "${CMAKE_CURRENT_BINARY_DIR}/${ininame}${iniext}"
                       --source ${CMAKE_CURRENT_SOURCE_DIR}
                      )
           else()
             _add_test(NAME ${testname}
-                      COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env ${TARGVAR_SCRIPT}
+                      COMMAND ${CMAKE_BINARY_DIR}/gdt-run-in-dune-env ${TARGVAR_SCRIPT}
                       ${EXEC_ARG}
                       --ini "${CMAKE_CURRENT_BINARY_DIR}/${ininame}${iniext}"
                       --source ${CMAKE_CURRENT_SOURCE_DIR}
@@ -416,7 +416,7 @@ function(dune_add_system_test)
         set(${SYSTEMTEST_ADDED_TESTS}_${target} ${added_tests_${target}} PARENT_SCOPE)
     endforeach(target)
   else()
-    dune_execute_process(COMMAND ${CMAKE_BINARY_DIR}/run-in-dune-env dune_has_static_section.py
+    dune_execute_process(COMMAND ${CMAKE_BINARY_DIR}/gdt-run-in-dune-env dune_has_static_section.py
                                  --ini ${SYSTEMTEST_INIFILE}
                          RESULT_VARIABLE res
                          ERROR_MESSAGE "Error checking for static info in ${SYSTEMTEST_INIFILE}")
