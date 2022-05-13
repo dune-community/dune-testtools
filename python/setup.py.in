@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
@@ -43,14 +43,9 @@ setup(name='dune.testtools',
       author='Dominic Kempf <dominic.kempf@iwr.uni-heidelberg.de>, Timo Koch <timo.koch@iws.uni-stuttgart.de>',
       author_email='no_mailinglist_yet@dune-testtools.de',
       url='http://conan2.iwr.uni-heidelberg.de/git/quality/dune-testtools',
-      packages=['dune.testtools',
-                'dune.testtools.wrapper',
-                'dune.testtools.parametertree',
-                ],
+      packages=find_packages(),
       install_requires=['pyparsing>=2.1.10',
                         'six>=1.4.1',
-                        'pytest',
-                        'pytest-flake8',
                         ],
       cmdclass={'test': PyTest},
       scripts=dune_testtools_scripts())

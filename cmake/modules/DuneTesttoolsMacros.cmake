@@ -14,8 +14,6 @@
 #    and debugging dune-testtools.
 #
 
-# Make sure that the configure time virtual env is set up
-dune_python_require_virtualenv_setup()
 
 # Generate a string containing "DEBUG" if we want to debug macros
 if(DEBUG_MACRO_TESTS)
@@ -28,3 +26,14 @@ include(DuneCMakeAssertion)
 include(ParsePythonData)
 include(DuneSystemtests)
 include(ExpandMetaIni)
+
+function(testtools_add_python_targets base)
+include(DuneSymlinkOrCopy)
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  message(WARNING "Source and binary dir are the same, skipping symlink!")
+else()
+  foreach(file ${ARGN})
+    dune_symlink_to_source_files(FILES ${file}.py)
+  endforeach()
+endif()
+endfunction()
