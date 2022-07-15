@@ -1,13 +1,22 @@
 #!@BASH@
 
+err_report() {
+    echo "Error on line $1"
+    echo "Using ${ACTIVATE}"
+}
+
+
 echo "Trying VENV in $(dirname $(which python3))/activate"
 if [ -f "$(dirname $(which python3))/activate" ]; then
   source "$(dirname $(which python3))/activate"
+  ACTIVATE="$(dirname $(which python3))/activate"
 elif [ -f "@DUNE_PYTHON_VIRTUALENV_PATH@/bin/activate" ]; then
   source @DUNE_PYTHON_VIRTUALENV_PATH@/bin/activate
+  ACTIVATE="@DUNE_PYTHON_VIRTUALENV_PATH@/bin/activate"
 else
-  echo "Dune internal virtual environment not found:"
-  echo "No activate script in @DUNE_PYTHON_VIRTUALENV_PATH@/bin or $(dirname $(which python3))/activate"
+  ACTIVATE="No activate script in @DUNE_PYTHON_VIRTUALENV_PATH@/bin or $(dirname $(which python3))/activate"
 fi
+
+trap err_report ERR
 
 "$@"
