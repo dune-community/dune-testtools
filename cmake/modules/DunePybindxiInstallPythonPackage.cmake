@@ -26,7 +26,7 @@ function(dune_pybindxi_install_python_package)
   cmake_parse_arguments(PYINST "${option}" "${single}" "${multi}" ${ARGN})
 
   if(PYINST_UNPARSED_ARGUMENTS)
-    message(WARNING "Unparsed arguments in dune_python_install_package: This often indicates typos!")
+    message(WARNING "Unparsed arguments in dune_pybindxi_install_python_package: This often indicates typos!")
   endif()
 
   # Check for the presence of the pip package
