@@ -46,6 +46,7 @@ setup(name='dune.testtools',
       packages=find_packages(),
       install_requires=['pyparsing>=2.1.10',
                         'six>=1.4.1',
+                        'wheel',
                         ],
       cmdclass={'test': PyTest},
       scripts=dune_testtools_scripts())
