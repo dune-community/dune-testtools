@@ -6,7 +6,6 @@ err_report() {
 }
 
 
-echo "Trying VENV in $(dirname $(which python3))/activate"
 if [ -f "$(dirname $(which python3))/activate" ]; then
   source "$(dirname $(which python3))/activate"
   ACTIVATE="$(dirname $(which python3))/activate"
