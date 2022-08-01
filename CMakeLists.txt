@@ -26,7 +26,8 @@ set(DUNE_TESTTOOLS_PATH ${PROJECT_SOURCE_DIR})
 add_subdirectory("cmake/scripts")
 add_subdirectory("cmake/modules")
 add_subdirectory("python")
-dune_python_install_package(PATH python PACKAGENAME "dune-testtools") 
+include(DunePybindxiInstallPythonPackage)
+dune_pybindxi_install_python_package(PATH python PACKAGENAME "dune-testtools") 
 
 dune_python_add_test(NAME pytest
                      INTERPRETER ${DUNE_PYTHON_VIRTUALENV_EXECUTABLE}
